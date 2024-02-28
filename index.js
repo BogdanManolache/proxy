@@ -5,6 +5,13 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*'); // Allow requests from any origin
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Allow specified HTTP methods
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept'); // Allow specified headers
+  next();
+});
+
 app.get('/proxy', async (req, res) => {
   try {
     const response = await fetch('https://whereisvor-server.up.railway.app/api/v1/water-sources');
