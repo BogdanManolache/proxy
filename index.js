@@ -3,6 +3,10 @@ import fetch from 'node-fetch';
 
 const app = express();
 
+// Body parser middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 const PORT = process.env.PORT || 3000;
 
 app.use((req, res, next) => {
@@ -20,6 +24,26 @@ app.get('/proxy', async (req, res) => {
     res.json(data);
   } catch (error) {
     console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.put('/proxy', async (req, res) => {
+  try {
+    const response = await fetch(
+      `https://whereisvor-server.up.railway.app/api/v1/water-sources/${req.body.id}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(req.body),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Error making PUT request:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
